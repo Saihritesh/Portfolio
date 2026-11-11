@@ -539,11 +539,7 @@ async function loadResume(box) {
     : `<p>The scroll is still being inked. Check back soon.</p>`;
 }
 
-// Email helpers: mailto needs a desktop mail app, so always offer Gmail and a copy button too.
-function gmailLink(m = {}) {
-  const q = new URLSearchParams({ view: 'cm', fs: '1', to: CONTENT.person.links.email, su: m.subject || 'Hello from your portfolio', body: m.body || '' });
-  return `https://mail.google.com/mail/?${q}`;
-}
+// Email helpers: a prefilled mailto link, plus a copy button for people without a mail app.
 function mailtoLink(m = {}) {
   return `mailto:${CONTENT.person.links.email}?subject=${encodeURIComponent(m.subject || '')}&body=${encodeURIComponent(m.body || '')}`;
 }
@@ -565,7 +561,8 @@ function openPopup(i) {
     ? `<div class="saved" style="display:flex;flex-direction:column;gap:6px"><span class="px">RAVEN SENT</span><span style="font-size:22px">Your message has reached the throne. Expect a raven back soon.</span></div>`
     : game.saved === 'failed'
     ? `<div class="saved" style="display:flex;flex-direction:column;gap:6px"><span class="px" style="color:#E88A7A">THE RAVEN WAS LOST</span><span style="font-size:22px">The message couldn't be delivered. Send it from your own mail instead; it's filled in for you.</span>
-        <div class="links"><a class="btn" href="${esc(gmailLink(game.lastMail))}" target="_blank" rel="noopener">OPEN IN GMAIL</a><a class="btn btn-dark" href="${esc(mailtoLink(game.lastMail))}">MAIL APP</a>${copyBtn()}</div></div>`
+        ${game.mailErr ? `<span style="font-size:18px;color:#A9B4D6">Relay said: ${esc(game.mailErr)}</span>` : ''}
+        <div class="links"><a class="btn" href="${esc(mailtoLink(game.lastMail))}">EMAIL INSTEAD</a>${copyBtn()}</div></div>`
     : `<form novalidate>
         <div class="direct-mail"><span>Write directly to <b>${esc(CONTENT.person.links.email)}</b></span>${copyBtn()}</div>
         <label>NAME<input class="field" type="text" name="name" required autocomplete="name"></label>
@@ -640,7 +637,8 @@ function openPopup(i) {
       });
       const j = await r.json().catch(() => ({}));
       game.saved = r.ok && String(j.success) !== 'false' ? 'sent' : 'failed';
-    } catch { game.saved = 'failed'; }
+      game.mailErr = game.saved === 'failed' ? (j.message || `The relay answered ${r.status}.`) : '';
+    } catch (ex) { game.saved = 'failed'; game.mailErr = 'Could not reach the relay (network or blocker).'; }
     if (game.popupObj === i) openPopup(i);
   });
   // the siege button gets focus, so E then ENTER takes you straight out to fight
