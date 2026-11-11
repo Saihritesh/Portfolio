@@ -1,0 +1,774 @@
+{
+  "person": {
+    "name": "Saihritesh Kowtarapu",
+    "title": "Software Engineer · AI/ML",
+    "university": "PES University, Bengaluru",
+    "degree": "B.Tech in Computer Science and Engineering",
+    "dates": "Sep 2023 to Jun 2027 (expected)",
+    "cgpa": "8.59 / 10",
+    "links": {
+      "github": "https://github.com/Saihritesh",
+      "linkedin": "https://linkedin.com/in/saihritesh-kowtarapu",
+      "email": "saihritesh2004@gmail.com",
+      "resume": "/resume.pdf",
+      "notoroma": "https://notoroma.vercel.app"
+    },
+    "contact_endpoint": "https://formsubmit.co/ajax/saihritesh2004@gmail.com"
+  },
+  "rooms": {
+    "chronicle": {
+      "title": "CHRONICLE HALL",
+      "section": "EXPERIENCE",
+      "exits": {
+        "left": "ENTRANCE",
+        "right": "LIBRARY"
+      },
+      "objects": [
+        {
+          "label": "SIGNPOST",
+          "verb": "READ",
+          "sprite": null,
+          "x_native": 70,
+          "y_native": 150,
+          "popup": {
+            "tag": "WELCOME",
+            "title": "Well met, traveller",
+            "sub": "Knight Saihritesh · AI/ML Engineer",
+            "body": [
+              "I'm Saihritesh Kowtarapu, a CS undergraduate at PES University and an AI/ML Engineering Intern.",
+              "I build end-to-end Generative AI systems (RAG pipelines, agentic tool-calling workflows, fine-tuned LLMs) that run in production. Walk the halls to find my work."
+            ],
+            "bullets": [
+              "Chronicle Hall: experience",
+              "Library: education and resume",
+              "Treasury: projects",
+              "Armory: skills",
+              "Trophy Room: certifications and courses",
+              "Throne Room: contact",
+              "Gate Hall: the siege"
+            ],
+            "chips": [],
+            "links": [
+              [
+                "GITHUB",
+                "https://github.com/Saihritesh"
+              ],
+              [
+                "LINKEDIN",
+                "https://linkedin.com/in/saihritesh-kowtarapu"
+              ],
+              [
+                "RESUME",
+                "/resume.pdf"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "TAPESTRY I",
+          "verb": "READ",
+          "sprite": null,
+          "x_native": 88,
+          "y_native": 46,
+          "popup": {
+            "tag": "SIDE QUEST · DONE",
+            "title": "The EverestIMS Expedition",
+            "sub": "AI/ML Engineer Intern · Bengaluru · Jul to Sep 2026",
+            "body": [
+              "Built Generative AI systems for network operations at EverestIMS Technologies."
+            ],
+            "bullets": [
+              "Built and deployed a production RAG + database-routing assistant for Airtel’s network operations team, now in use by the client",
+              "Fine-tuned three 7–8B open-source LLMs with QLoRA for network root-cause analysis, reaching 95% accuracy and 0.93 macro-F1 on a held-out benchmark",
+              "Designed an LLM-as-judge evaluation pipeline and ran controlled experiments on context length, noise ratio and evidence position",
+              "Presented a 40-slide model selection playbook to engineering leadership, covering private on-premise deployment"
+            ],
+            "chips": [
+              "RAG",
+              "QLoRA",
+              "LLM-as-judge",
+              "Ollama",
+              "MongoDB"
+            ],
+            "links": [
+              [
+                "SEE THE PROJECT",
+                "#treasury"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "TAPESTRY II",
+          "verb": "READ",
+          "sprite": null,
+          "x_native": 180,
+          "y_native": 46,
+          "popup": {
+            "tag": "MAIN QUEST · ACTIVE",
+            "title": "The Scholar's Path",
+            "sub": "B.Tech CSE · PES University, Bengaluru · Sep 2023 to Jun 2027",
+            "body": [
+              "Final year, with a capstone in reliability-aware federated learning."
+            ],
+            "bullets": [
+              "CGPA 8.59 / 10",
+              "Graduating June 2027 (expected)",
+              "Strong foundations in Data Structures & Algorithms and System Design"
+            ],
+            "chips": [],
+            "links": [
+              [
+                "VISIT THE LIBRARY",
+                "#library"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "TAPESTRY III",
+          "verb": "READ",
+          "sprite": null,
+          "x_native": 272,
+          "y_native": 46,
+          "popup": {
+            "tag": "MAIN QUEST · OPEN",
+            "title": "Find a Guild",
+            "sub": "Seeking software engineering roles",
+            "body": [
+              "Looking for a team to build real systems with. The Throne Room is just ahead."
+            ],
+            "bullets": [],
+            "chips": [],
+            "links": [
+              [
+                "SEND A RAVEN",
+                "#throne"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        }
+      ],
+      "tapestries": [
+        {
+          "x": 62,
+          "tag": "DONE",
+          "title": "THE EVERESTIMS EXPEDITION",
+          "when": "JUL TO SEP 2026"
+        },
+        {
+          "x": 154,
+          "tag": "ACTIVE",
+          "title": "THE SCHOLAR'S PATH",
+          "when": "2023 TO 2027"
+        },
+        {
+          "x": 246,
+          "tag": "OPEN",
+          "title": "FIND A GUILD",
+          "when": "NOW"
+        }
+      ]
+    },
+    "library": {
+      "title": "THE LIBRARY",
+      "section": "EDUCATION",
+      "exits": {
+        "left": "CHRONICLE HALL",
+        "right": "TREASURY"
+      },
+      "objects": [
+        {
+          "label": "TOME OF LEARNING",
+          "verb": "READ",
+          "sprite": "tome",
+          "x_native": 177,
+          "y_native": 156,
+          "popup": {
+            "tag": "ACTIVE QUEST",
+            "title": "B.Tech in CSE",
+            "sub": "PES University, Bengaluru · Sep 2023 to Jun 2027",
+            "body": [
+              "Bachelor of Technology in Computer Science Engineering."
+            ],
+            "bullets": [
+              "CGPA 8.59 / 10",
+              "Sep 2023 to June 2027 (expected)",
+              "Bengaluru, India"
+            ],
+            "chips": [],
+            "links": []
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "RESUME",
+          "verb": "READ",
+          "sprite": null,
+          "x_native": 101,
+          "y_native": 92,
+          "popup": {
+            "tag": "SCROLL OF DEEDS",
+            "title": "Resume",
+            "sub": "Saihritesh Kowtarapu · Software Engineer",
+            "body": [],
+            "bullets": [],
+            "chips": [],
+            "embed": "resume",
+            "links": []
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "CAPSTONE SCROLL",
+          "verb": "READ",
+          "sprite": "scroll",
+          "x_native": 258,
+          "y_native": 92,
+          "popup": {
+            "tag": "CAPSTONE",
+            "title": "Semantic Reliability Profiles",
+            "sub": "Final-year project",
+            "body": [
+              "Reliability-aware aggregation for federated learning across hospitals."
+            ],
+            "bullets": [
+              "Image and report consistency drives client weights",
+              "Built on Flower, benchmarked against FedAvg and FedProx"
+            ],
+            "chips": [
+              "PyTorch",
+              "Flower"
+            ],
+            "links": []
+          },
+          "has_contact_form": false
+        }
+      ]
+    },
+    "treasury": {
+      "title": "THE TREASURY",
+      "section": "PROJECTS",
+      "exits": {
+        "left": "LIBRARY",
+        "right": "ARMORY"
+      },
+      "objects": [
+        {
+          "label": "AIRTEL NETWORK INTELLIGENCE ASSISTANT",
+          "verb": "INSPECT",
+          "sprite": "orb",
+          "x_native": 118,
+          "y_native": 152,
+          "popup": {
+            "tag": "JUL TO SEP 2026 · IN USE",
+            "title": "Airtel Network Intelligence Assistant",
+            "sub": "Ops chat assistant for Airtel",
+            "body": [
+              "Answers network-operations questions from a live database or technical docs, strictly from retrieved data."
+            ],
+            "bullets": [
+              "Routes each operations question to a live MongoDB database (~600K records) or a RAG pipeline over 15 technical documents",
+              "Embedding-based query router reaches 93% accuracy on an adversarial set of ambiguous questions; misrouting traced to class imbalance and fixed with per-class scoring",
+              "Validation layer blocks unsafe LLM-generated queries and cross-checks aggregations against raw counts",
+              "Deployed on a Linux server and adopted by Airtel"
+            ],
+            "chips": [
+              "Python",
+              "MongoDB",
+              "ChromaDB",
+              "Ollama",
+              "Groq"
+            ],
+            "links": []
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "NOTOROMA",
+          "verb": "INSPECT",
+          "sprite": "book",
+          "x_native": 149,
+          "y_native": 152,
+          "popup": {
+            "tag": "SEP 2026 · LIVE",
+            "title": "Notoroma",
+            "sub": "AI-integrated notes platform",
+            "body": [
+              "Markdown notes with an agentic Study Buddy that tutors you on your own notes."
+            ],
+            "bullets": [
+              "Agentic “Study Buddy” tutor: a custom multi-round tool-calling loop on Groq's function-calling API, with a two-phase prompt that separates tool selection from JSON output",
+              "Chunk and map-reduce pipeline for summaries, flashcards and tests of any length",
+              "Long LLM jobs run async through Celery and Redis",
+              "Normalized PostgreSQL schema with multi-user accounts"
+            ],
+            "chips": [
+              "Django",
+              "Next.js",
+              "Groq",
+              "Celery",
+              "Redis",
+              "PostgreSQL"
+            ],
+            "links": [
+              [
+                "VISIT",
+                "https://notoroma.vercel.app"
+              ],
+              [
+                "GITHUB",
+                "https://github.com/Saihritesh"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "E-COMMERCE ANALYTICS",
+          "verb": "INSPECT",
+          "sprite": "coins",
+          "x_native": 180,
+          "y_native": 152,
+          "popup": {
+            "tag": "JUN TO JUL 2026",
+            "title": "E-Commerce Analytics",
+            "sub": "Business analytics and forecasting on 100K+ orders",
+            "body": [
+              "A unified analytical model and dashboard for an online store."
+            ],
+            "bullets": [
+              "Integrated 8 relational datasets, resolving merge conflicts and duplicates",
+              "Engineered delivery delay, customer cohort and repeat-purchase features",
+              "5 KPIs for revenue forecasting and seller performance in Tableau"
+            ],
+            "chips": [
+              "Python",
+              "Pandas",
+              "SQL",
+              "Tableau"
+            ],
+            "links": [
+              [
+                "GITHUB",
+                "https://github.com/Saihritesh/E-Commerce-Platform-Analysis"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "PANDAS CONTRIBUTIONS",
+          "verb": "INSPECT",
+          "sprite": "quill",
+          "x_native": 211,
+          "y_native": 152,
+          "popup": {
+            "tag": "JUL TO OCT 2026 · MERGED",
+            "title": "Pandas Contributions",
+            "sub": "Open-source fixes to pandas",
+            "body": [
+              "Two bug fixes traced through pandas internals, each with regression tests."
+            ],
+            "bullets": [
+              "Fixed a legend-rendering defect in DataFrameGroupBy.plot.scatter() (PR #66027)",
+              "Fixed a 2.x regression where ffill/bfill with axis=1, inplace=True left data unchanged (PR #71232, merged)",
+              "Targeted Pytest coverage with zero regressions"
+            ],
+            "chips": [
+              "Python",
+              "Pandas",
+              "Pytest",
+              "Git"
+            ],
+            "links": [
+              [
+                "PR #71232 · MERGED",
+                "https://github.com/pandas-dev/pandas/pull/71232"
+              ],
+              [
+                "PR #66027",
+                "https://github.com/pandas-dev/pandas/pull/66027"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "SEMANTIC RELIABILITY FL",
+          "verb": "INSPECT",
+          "sprite": "shield",
+          "x_native": 242,
+          "y_native": 152,
+          "popup": {
+            "tag": "CAPSTONE",
+            "title": "Semantic Reliability FL",
+            "sub": "Federated learning across hospitals",
+            "body": [
+              "Weights each hospital by how consistent its image and report data looks."
+            ],
+            "bullets": [
+              "DenseNet-121 and RadBERT encoders feed reliability profiles",
+              "Benchmarked against FedAvg and FedProx",
+              "Simulated in Flower on CheXpert with corrupted clients"
+            ],
+            "chips": [
+              "PyTorch",
+              "Flower",
+              "DenseNet-121",
+              "RadBERT"
+            ],
+            "links": [
+              [
+                "GITHUB",
+                "https://github.com/Saihritesh"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        }
+      ]
+    },
+    "armory": {
+      "title": "THE ARMORY",
+      "section": "SKILLS",
+      "exits": {
+        "left": "TREASURY",
+        "right": "TROPHY ROOM"
+      },
+      "objects": [
+        {
+          "label": "ARCANE RACK",
+          "verb": "EXAMINE",
+          "sprite": null,
+          "x_native": 85,
+          "y_native": 122,
+          "popup": {
+            "tag": "SCHOOL",
+            "title": "Arcane Arts",
+            "sub": "Generative AI",
+            "body": [],
+            "bullets": [],
+            "chips": [
+              "RAG",
+              "Agentic Workflows",
+              "Tool / Function Calling",
+              "LangChain",
+              "LangGraph",
+              "Prompt Engineering",
+              "LLM-as-judge",
+              "LoRA / QLoRA",
+              "Hugging Face"
+            ],
+            "links": []
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "FORGED PLATE",
+          "verb": "EXAMINE",
+          "sprite": null,
+          "x_native": 132,
+          "y_native": 146,
+          "popup": {
+            "tag": "SCHOOL",
+            "title": "The Forge",
+            "sub": "Backend and infrastructure",
+            "body": [],
+            "bullets": [],
+            "chips": [
+              "FastAPI",
+              "Django",
+              "Flask",
+              "Celery",
+              "Redis",
+              "PostgreSQL",
+              "MongoDB",
+              "ChromaDB",
+              "Qdrant",
+              "pgvector",
+              "Google Cloud",
+              "Linux"
+            ],
+            "links": []
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "THE ANVIL",
+          "verb": "EXAMINE",
+          "sprite": null,
+          "x_native": 180,
+          "y_native": 166,
+          "popup": {
+            "tag": "SCHOOL",
+            "title": "Common Tongues",
+            "sub": "Languages and fundamentals",
+            "body": [],
+            "bullets": [],
+            "chips": [
+              "Python",
+              "SQL",
+              "C",
+              "JavaScript",
+              "Data Structures & Algorithms",
+              "System Design",
+              "REST API Design",
+              "Pytest",
+              "Git"
+            ],
+            "links": []
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "MIRROR PLATE",
+          "verb": "EXAMINE",
+          "sprite": null,
+          "x_native": 228,
+          "y_native": 146,
+          "popup": {
+            "tag": "SCHOOL",
+            "title": "Alchemy",
+            "sub": "ML and data",
+            "body": [],
+            "bullets": [],
+            "chips": [
+              "PyTorch",
+              "TensorFlow",
+              "Pandas",
+              "NumPy",
+              "Statsmodels",
+              "Scikit-learn",
+              "SQL",
+              "Tableau"
+            ],
+            "links": []
+          },
+          "has_contact_form": false
+        }
+      ]
+    },
+    "trophy": {
+      "title": "TROPHY ROOM",
+      "section": "CERTIFICATIONS & HONOURS",
+      "exits": {
+        "left": "ARMORY",
+        "right": "THRONE ROOM"
+      },
+      "objects": [
+        {
+          "label": "CERTIFICATIONS",
+          "verb": "INSPECT",
+          "sprite": null,
+          "x_native": 88,
+          "y_native": 46,
+          "popup": {
+            "tag": "SEALED AND SIGNED",
+            "title": "Certifications",
+            "sub": "Credentials earned along the road",
+            "body": [],
+            "bullets": [
+              "Building AI Agents with MongoDB · MongoDB · Jul 2026",
+              "Introduction to TensorFlow for AI, ML and Deep Learning · Stanford University · Jul 2025",
+              "Convolutional Neural Networks in TensorFlow · Stanford University · Jul 2025",
+              "Supervised Machine Learning: Regression · Stanford University · Mar 2025",
+              "HTML, CSS, JavaScript · Meta · Jul 2024"
+            ],
+            "chips": [],
+            "links": []
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "GRAND TROPHY",
+          "verb": "INSPECT",
+          "sprite": null,
+          "x_native": 180,
+          "y_native": 60,
+          "popup": {
+            "tag": "FEATS OF NOTE",
+            "title": "The Grand Trophy",
+            "sub": "Highlights kept under glass",
+            "body": [],
+            "bullets": [
+              "Production RAG assistant adopted by Airtel’s network operations team",
+              "95% accuracy and 0.93 macro-F1 fine-tuning 7–8B LLMs with QLoRA",
+              "93% query-routing accuracy on adversarial, ambiguous questions",
+              "Merged fix to pandas core (PR #71232)",
+              "40-slide model selection playbook presented to engineering leadership"
+            ],
+            "chips": [],
+            "links": []
+          },
+          "has_contact_form": false
+        },
+        {
+          "label": "HALL OF HONOURS",
+          "verb": "INSPECT",
+          "sprite": null,
+          "x_native": 272,
+          "y_native": 46,
+          "popup": {
+            "tag": "HONOURS · OCT 2026",
+            "title": "Top 5 · Neo4j Graph Builder",
+            "sub": "Build Sprint, Bengaluru · hackFront India × Neo4j",
+            "body": [
+              "Placed in the top 5 at the Neo4j Graph Builder Build Sprint, held at Quad AI School of Technology, Bengaluru on 17 October 2026."
+            ],
+            "bullets": [
+              "Hands-on building with Graph + AI and agent memory",
+              "Organised by hackFront India in collaboration with Neo4j"
+            ],
+            "chips": [
+              "Neo4j",
+              "Graph + AI",
+              "Agent Memory"
+            ],
+            "links": [
+              [
+                "VIEW CERTIFICATE",
+                "/certificates/neo4j-graph-builder.pdf"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        }
+      ]
+    },
+    "throne": {
+      "title": "THRONE ROOM",
+      "section": "CONTACT",
+      "exits": {
+        "left": "TROPHY ROOM",
+        "right": "GATE HALL"
+      },
+      "objects": [
+        {
+          "label": "THE KNIGHT ON THE THRONE",
+          "verb": "SPEAK TO",
+          "sprite": null,
+          "x_native": 180,
+          "y_native": 146,
+          "popup": {
+            "tag": "AUDIENCE",
+            "title": "Request an audience",
+            "sub": "Knight Saihritesh is free to join a guild.",
+            "body": [
+              "Leave a message and it flies straight to his inbox. He will send a raven back."
+            ],
+            "bullets": [],
+            "chips": [],
+            "links": [
+              [
+                "GITHUB",
+                "https://github.com/Saihritesh"
+              ],
+              [
+                "LINKEDIN",
+                "https://linkedin.com/in/saihritesh-kowtarapu"
+              ],
+              [
+                "EMAIL",
+                "mailto:saihritesh2004@gmail.com"
+              ],
+              [
+                "GMAIL",
+                "https://mail.google.com/mail/?view=cm&fs=1&to=saihritesh2004@gmail.com&su=Hello%20from%20your%20portfolio"
+              ]
+            ]
+          },
+          "has_contact_form": true
+        }
+      ]
+    },
+    "gate": {
+      "title": "GATE HALL",
+      "section": "THE SIEGE",
+      "exits": {
+        "left": "THRONE ROOM",
+        "right": "ENTRANCE"
+      },
+      "objects": [
+        {
+          "label": "LEVER",
+          "verb": "SLASH",
+          "sprite": null,
+          "action": "gate",
+          "x_native": 118,
+          "y_native": 150
+        },
+        {
+          "label": "THE GATE",
+          "verb": "LOOK",
+          "sprite": null,
+          "x_native": 180,
+          "y_native": 70,
+          "popup": {
+            "tag": "LORE · THE SIEGE",
+            "title": "Knight for Hire",
+            "sub": "Built panel by panel, pixel by pixel",
+            "body": [
+              "Every room here maps to part of a portfolio. Rooms you have not entered stay dark on the map until you find them.",
+              "Beyond the gate, ogres and dragons gather in the moonlight. Step outside and hold the line as long as you can."
+            ],
+            "bullets": [],
+            "chips": [
+              "Explore",
+              "Inspect",
+              "Collect relics"
+            ],
+            "links": [
+              [
+                "DEFEND THE GATE",
+                "#courtyard"
+              ]
+            ]
+          },
+          "has_contact_form": false
+        }
+      ]
+    }
+  },
+  "map": [
+    {
+      "room": "chronicle",
+      "grid_column": "1/3",
+      "grid_row": "1/4"
+    },
+    {
+      "room": "library",
+      "grid_column": "3/4",
+      "grid_row": "1/4"
+    },
+    {
+      "room": "treasury",
+      "grid_column": "4/6",
+      "grid_row": "1/4"
+    },
+    {
+      "room": "armory",
+      "grid_column": "6/7",
+      "grid_row": "1/4"
+    },
+    {
+      "room": "trophy",
+      "grid_column": "7/8",
+      "grid_row": "1/6"
+    },
+    {
+      "room": "throne",
+      "grid_column": "4/7",
+      "grid_row": "4/6"
+    },
+    {
+      "room": "gate",
+      "grid_column": "1/4",
+      "grid_row": "4/6"
+    }
+  ]
+}
