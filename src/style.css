@@ -344,3 +344,10 @@ textarea.field { padding-top: 6px; resize: vertical; }
 .direct-mail b { color: #F2E6CF; font-weight: normal; }
 .direct-mail .btn, .saved .btn { min-height: 36px; font-size: 9px; padding: 0 10px; }
 .popup .honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+/* music toggle: outside the scaled stage so it stays small and crisp */
+.music-toggle { position: fixed; right: 14px; bottom: 14px; z-index: 900; font-size: 10px; color: #070B1E; background: #E8A45A; border: 0; padding: 10px 12px;
+  box-shadow: inset -3px -3px 0 #A8682E, inset 3px 3px 0 #FFD08A, 0 0 0 3px #04060F; cursor: pointer; }
+.music-toggle.off { background: #3A4A75; color: #D9D2C3; box-shadow: inset -3px -3px 0 #1D254A, inset 3px 3px 0 #52608E, 0 0 0 3px #04060F; }
+.music-toggle:focus-visible { outline: 3px solid #FFE7A0; outline-offset: 3px; }
+@media (max-width: 700px) { .music-toggle { top: 10px; bottom: auto; right: 10px; font-size: 8px; padding: 8px 9px; } }

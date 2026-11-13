@@ -16,3 +16,6 @@ __pycache__/
 # the original design handoff (kept locally, not part of the site)
 handoff/
 castle_of_code_complete.zip
+
+# local listening page for drafting music
+music-test.html

@@ -92,7 +92,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
         <div class="ar-bossbar" hidden><span class="px">THE DREAD WYRM</span><div class="bar"><div></div></div></div>
         <div class="ar-banner px" hidden></div>
         <div class="frame ar-panel" hidden></div>
-        <div class="px controls"><span><b>◄ ►</b> MOVE</span><span><b>SPACE</b> JUMP</span><span><b>X</b> SLASH</span><span><b>ESC</b> PAUSE</span></div>
+        <div class="px controls"><span><b>◄ ►</b> MOVE</span><span><b>SPACE</b> JUMP</span><span><b>X</b> SLASH</span><span><b>ESC</b> PAUSE</span><span><b>N</b> MUSIC</span></div>
       </div>`;
     root = roomEl.querySelector('.arena');
     layer = root.querySelector('.ar-layer');
@@ -785,5 +785,6 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
 
   // Dev-only testing hook (stripped from production builds): jump to a wave, read state.
   const debug = { boss: () => { st.queue = []; st.enemies.forEach((e) => e.el.remove()); st.enemies = []; st.wave = MAX_WAVES; spawnBoss(); }, state: () => st, wave: (n) => { st.wave = n - 1; st.queue = []; st.enemies.forEach((e) => { e.el.remove(); }); st.enemies = []; nextWave(); } };
-  return { enter, update, render, key, jump, slash, confirm, debug };
+  const typing = () => !!st && st.phase === 'initials';             // letters are being typed for a high score
+  return { enter, update, render, key, jump, slash, confirm, typing, debug };
 }

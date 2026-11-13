@@ -1,6 +1,7 @@
 import './style.css';
 import CONTENT from './content.json';
 import { createArena } from './arena.js';
+import { createMusic } from './music.js';
 
 /* ---------------------------------------------------------------------------
  * Knight for Hire
@@ -195,6 +196,7 @@ function enterCastle(room = 'chronicle', side = 'left') {   // the castle tour s
 
 function backToIntro() {
   mode = 'intro';
+  syncMusic();
   intro.hidden = false;
   game.root.hidden = true;
   history.replaceState(null, '', location.pathname);
@@ -231,7 +233,7 @@ function buildGame() {
           <span class="px">MAP · M</span>
           <div class="grid">${CONTENT.map.map((m) => `<div class="cell ${m.room === 'throne' ? 'throne' : ''}" data-room="${m.room}" style="grid-column:${m.grid_column};grid-row:${m.grid_row}"></div>`).join('')}</div>
         </button>
-        <div class="px controls"><span><b>◄ ►</b> MOVE</span><span><b>SPACE</b> JUMP</span><span><b>X</b> SLASH</span><span><b>E</b> INTERACT</span><span><b>M</b> MAP</span></div>
+        <div class="px controls"><span><b>◄ ►</b> MOVE</span><span><b>SPACE</b> JUMP</span><span><b>X</b> SLASH</span><span><b>E</b> INTERACT</span><span><b>M</b> MAP</span><span><b>N</b> MUSIC</span></div>
         <div class="fader"></div>
       </div>
       <div class="touch" aria-hidden="true">
@@ -276,6 +278,7 @@ function buildGame() {
 function loadRoom(key, side) {
   const R = CONTENT.rooms[key];
   game.key = key;
+  syncMusic();
   game.visited.add(key);
   localStorage.setItem('coc-visited', JSON.stringify([...game.visited]));
   history.replaceState(null, '', '#' + key);
@@ -420,6 +423,7 @@ function enterArena() {
   game.view.classList.add('arena-on');
   history.replaceState(null, '', '#courtyard');
   arena.enter(game.roomEl);
+  syncMusic();
 }
 function leaveArena() {
   if (!game.inArena) return;
@@ -432,10 +436,49 @@ function walkTo(x, then) {
   game.target = { x, then };
 }
 
+/* ---------- music (src/music.js): one theme per area, crossfading as you move ---------- */
+const music = createMusic();
+const ROOM_MUSIC = { throne: 'court', gate: 'court' };                   // every other room: 'castle'
+let musicOn = localStorage.getItem('coc-music') !== 'off';
+let audioUnlocked = false;                                                  // browsers only allow sound after a click or key press
+function musicWanted() {
+  if (mode === 'intro') return 'title';
+  if (game.inArena) return 'nightRide';
+  return ROOM_MUSIC[game.key] || 'castle';
+}
+function syncMusic() {
+  if (musicOn && audioUnlocked) music.play(musicWanted());
+  else music.stop();
+  const b = document.getElementById('music-toggle');
+  if (b) { b.textContent = musicOn ? '♪ ON' : '♪ OFF'; b.setAttribute('aria-pressed', String(musicOn)); b.classList.toggle('off', !musicOn); }
+}
+function toggleMusic() {
+  musicOn = !musicOn;
+  localStorage.setItem('coc-music', musicOn ? 'on' : 'off');
+  audioUnlocked = true;
+  syncMusic();
+}
+function unlockAudio() {
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+  syncMusic();
+}
+for (const ev of ['pointerdown', 'keydown', 'touchstart']) window.addEventListener(ev, unlockAudio, { capture: true, passive: true });
+document.addEventListener('visibilitychange', () => { if (document.hidden) music.suspend(); else if (musicOn) music.resume(); });
+{
+  const b = h(`<button type="button" id="music-toggle" class="px music-toggle" aria-label="Music" aria-pressed="true">♪ ON</button>`);
+  b.addEventListener('click', (e) => { e.stopPropagation(); toggleMusic(); b.blur(); });
+  document.body.appendChild(b);
+}
+
 /* ---------- input ---------- */
 const typing = () => { const a = document.activeElement; return a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA'); };
 
 window.addEventListener('keydown', (e) => {
+  const typingField = /^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName || '');
+  if ((e.key === 'n' || e.key === 'N') && !typingField && !(game.inArena && arena.typing()) && !e.metaKey && !e.ctrlKey) {
+    toggleMusic(); return;
+  }
   if (mode === 'intro') {
     if (['Enter', ' ', 'ArrowDown', 'PageDown'].includes(e.key) && document.activeElement?.id !== 'start') { e.preventDefault(); enterCastle(); }
     return;
