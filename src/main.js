@@ -561,6 +561,7 @@ function slash() {
 // On the strike frame: anything within reach in front of the knight reacts.
 function slashStrike() {
   const objs = CONTENT.rooms[game.key].objects;
+  let chimed = false;
   objs.forEach((o, i) => {
     if (o.action === 'gate') {             // the lever only answers to the sword
       if (i !== game.nearIdx || (LEVER_X < game.x ? -1 : 1) !== game.facing) return;
@@ -577,6 +578,7 @@ function slashStrike() {
     el.classList.remove('struck');
     void el.offsetWidth;            // restart the shake animation
     el.classList.add('struck');
+    if (!chimed) { chimed = true; playSfx('chime'); }   // a little magic when the sword touches an exhibit
     const spark = h(`<div class="spark" style="left:${o.x_native * S}px;top:${(o.sprite ? o.y_native * S + 30 : Math.max(o.y_native * S, (FLOOR - 26) * S))}px"></div>`);
     game.roomEl.appendChild(spark);
     setTimeout(() => spark.remove(), 400);

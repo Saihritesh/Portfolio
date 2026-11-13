@@ -451,11 +451,19 @@ export function createMusic() {
   const jit = () => 0.9 + Math.random() * 0.2;                     // small pitch variation per swing
   const FX = {
     slash: (t, o) => { const v = jit(); swoosh(t, 0.2, 'lowpass', 320 * v, 950 * v, 0.9, 0.9, 0.06, o); },   // a soft air whoosh, easy on the ears when spammed
+    chime: (t, o) => {                                              // a soft magical sparkle: a quick rising arpeggio of bell tones
+      const roots = [1318.5, 1396.9, 1568, 1174.7], r = roots[Math.floor(Math.random() * roots.length)];
+      [1, 1.26, 1.498, 2].forEach((m, i) => {
+        tone(t + i * 0.045, 0.55, 'sine', r * m, r * m * 1.002, 0.09 - i * 0.012, o, 0.004);
+        tone(t + i * 0.045, 0.3, 'triangle', r * m * 2, r * m * 2, 0.018, o, 0.004);   // a glassy overtone
+      });
+      nz(t, 0.35, 'highpass', 7000, 9000, 0.7, 0.05, o);            // faint shimmer
+    },
     step: (t, o) => {                                               // an armoured boot on stone: a soft thud plus a little chainmail jingle
       const v = 0.9 + Math.random() * 0.2;
-      tone(t, 0.07, 'sine', 120 * v, 60, 0.32, o, 0.002);
-      nz(t, 0.05, 'lowpass', 1400 * v, 300, 0.8, 0.35, o);
-      nz(t + 0.01, 0.06, 'bandpass', 6500 * v, 5000, 4.0, 0.12, o);
+      tone(t, 0.06, 'sine', 120 * v, 60, 0.14, o, 0.003);
+      nz(t, 0.045, 'lowpass', 1100 * v, 300, 0.8, 0.13, o);
+      nz(t + 0.01, 0.05, 'bandpass', 6500 * v, 5000, 4.0, 0.04, o);
     },
     hit: (t, o) => { tone(t, 0.13, 'sine', 170, 55, 0.9, o); nz(t, 0.09, 'lowpass', 2200, 500, 0.8, 0.6, o); },
     hitDragon: (t, o) => { tone(t, 0.11, 'sine', 210, 70, 0.7, o); nz(t, 0.08, 'lowpass', 2600, 700, 0.8, 0.5, o); tone(t + 0.02, 0.14, 'sawtooth', 1100, 520, 0.12, o); },
