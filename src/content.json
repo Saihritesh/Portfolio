@@ -599,8 +599,7 @@
               "Production RAG assistant adopted by Airtel’s network operations team",
               "95% accuracy and 0.93 macro-F1 fine-tuning 7–8B LLMs with QLoRA",
               "93% query-routing accuracy on adversarial, ambiguous questions",
-              "Merged fix to pandas core (PR #71232)",
-              "40-slide model selection playbook presented to engineering leadership"
+              "Merged fix to pandas core (PR #71232)"
             ],
             "chips": [],
             "links": []

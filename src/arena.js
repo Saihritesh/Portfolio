@@ -6,7 +6,8 @@
  * ------------------------------------------------------------------------- */
 
 const A = (p) => '/assets/' + p;
-const SCORES_KEY = 'coc-arena-scores';
+const SCORES_KEY = 'coc-arena-scores-v2';   // bumped to wipe every old high score table
+try { localStorage.removeItem('coc-arena-scores'); } catch { /* storage blocked */ }
 const NAME_KEY = 'coc-arena-name';
 
 // Knight physics
