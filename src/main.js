@@ -452,6 +452,7 @@ function syncMusic() {
   const b = document.getElementById('music-toggle');
   if (b) { b.textContent = musicOn ? '♪ ON' : '♪ OFF'; b.setAttribute('aria-pressed', String(musicOn)); b.classList.toggle('off', !musicOn); }
 }
+function playSfx(name) { if (musicOn && audioUnlocked) music.sfx(name); }   // the ♪ toggle mutes effects too
 function toggleMusic() {
   musicOn = !musicOn;
   localStorage.setItem('coc-music', musicOn ? 'on' : 'off');
@@ -524,6 +525,7 @@ function slash() {
   game.slash = 0;
   game.slashHit = false;
   game.target = null;
+  playSfx('slash');
 }
 
 // On the strike frame: anything within reach in front of the knight reacts.
@@ -533,6 +535,7 @@ function slashStrike() {
     if (o.action === 'gate') {             // the lever only answers to the sword
       if (i !== game.nearIdx || (LEVER_X < game.x ? -1 : 1) !== game.facing) return;
       toggleGate();
+      playSfx('clang');
       const spark = h(`<div class="spark" style="left:${(LEVER_X + 3) * S}px;top:${158 * S}px"></div>`);
       game.roomEl.appendChild(spark);
       setTimeout(() => spark.remove(), 400);
@@ -839,6 +842,7 @@ buildGame();
 arena = createArena({
   keys: game.keys, S, FLOOR, SPRITES, HK, HK_CX, reduced,
   onExit: () => travel('gate', 'center'),   // back in through the gate
+  sfx: (n) => playSfx(n),
 });
 if (import.meta.env.DEV) window.__arena = arena.debug;
 const start = location.hash.slice(1);

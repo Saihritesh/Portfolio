@@ -24,7 +24,7 @@ const WYRM = {
   w: 160, h: 112, hp: 30,
   head: { l: 36, r: 72, t: -34, b: -6 },      // crit spot: 2 damage, needs a jump when it's grounded
   chest: { l: -20, r: 32, t: -10, b: 24 },
-  body: { l: -44, r: 52, t: -22, b: 38 },     // contact damage during the dive
+  body: { l: -30, r: 36, t: -16, b: 38 },     // contact damage during the dive (the body itself, not the wings)
   mouth: { x: 68, y: -18 },
   groundOffset: 40,                             // centre sits this far above the floor when it has slammed down
   // per phase (1..3): hover time, grounded (vulnerable) time, dive telegraph, fireballs per rain, flame waves per sweep
@@ -59,7 +59,7 @@ function qualifies(score) {
   return score > 0 && (list.length < 5 || score > list[list.length - 1].s);
 }
 
-export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExit }) {
+export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExit, sfx = () => {} }) {
   let root, layer, knightEl, knightImg, heartsEl, scoreEl, bestEl, bannerEl, panelEl;
   let st = null;          // whole game state, rebuilt on enter/start
 
@@ -131,7 +131,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     panel(`
       <div class="px ar-title">THE COURTYARD SIEGE</div>
       <p>Ogres and dragons gather at the gate. Survive five waves, and then face what commands them.</p>
-      <ul class="ar-tips"><li><b>X</b> slash · two hits fell an ogre</li><li>When an ogre raises its club, strike first or get clear</li><li>Dragons swoop low to attack: that's your chance. Jump or slash their fireballs</li><li>The Dread Wyrm can only be wounded after it slams down. Jump to strike its head</li></ul>
+      <ul class="ar-tips"><li><b>X</b> slash · two hits fell an ogre</li><li>When an ogre raises its club, strike first or get clear</li><li>Dragons swoop low to attack: that's your chance. Jump or slash their fireballs</li><li>The Dread Wyrm marks where it will dive: get clear, then strike once it slams down. Jump to hit its head</li></ul>
       <div class="px ar-sub">TOP KNIGHTS</div>${scoreTable()}
       <div class="ar-actions"><button type="button" class="btn blink" data-act="start">ENTER · BEGIN</button><button type="button" class="btn btn-dark" data-act="exit">ESC · BACK INSIDE</button></div>`);
     wirePanel();
@@ -181,7 +181,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
   function startGame() {
     const keep = st.initials;
     st = Object.assign(fresh(), { initials: keep });
-    layer.querySelectorAll('.ent, .ar-pop, .spark').forEach((e) => e.remove());
+    layer.querySelectorAll('.ent, .ar-pop, .spark, .ar-target').forEach((e) => e.remove());
     root.querySelector('.ar-bossbar').hidden = true;
     st.phase = 'play';
     st.k.x = 180;
@@ -259,6 +259,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     k.vy = Math.max(k.vy, 90);
     k.slash = -1;
     st.shake = 0.25;
+    sfx('hurt');
     st.combo = 1; st.comboT = 0;
     hud();
     if (k.hp <= 0) gameOver();
@@ -273,6 +274,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
 
   function kill(e) {
     e.state = 'dying'; e.t = 0;
+    sfx(e.type === 'ogre' ? 'ogreDie' : 'dragonDie');
     st.kills += 1;
     st.combo = st.comboT > 0 ? Math.min(5, st.combo + 1) : 1;
     st.comboT = 3;
@@ -310,6 +312,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
       if (box.r < x0 || box.l > x1 || box.b < yTop || box.t > yBot) continue;
       landed = true;
       e.hp -= 1; e.flash = 0.15;
+      sfx(e.type === 'ogre' ? 'hit' : 'hitDragon');
       spark((Math.max(box.l, x0) + Math.min(box.r, x1)) / 2, Math.max(box.t, yTop) + 10);
       if (e.hp <= 0) { kill(e); continue; }
       if (e.type === 'ogre') { e.state = 'stagger'; e.t = 0; e.x += k.facing * 8; }
@@ -319,7 +322,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
       if (f.dead || f.ground) continue;                     // ground flames must be jumped
       if (f.x >= x0 - 4 && f.x <= x1 + 4 && f.y >= yTop - 4 && f.y <= yBot) {
         f.dead = true; landed = true;
-        spark(f.x, f.y);
+        spark(f.x, f.y); sfx('sizzle');
         addScore(25, f.x, f.y - 6);
       }
     }
@@ -491,6 +494,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     st.boss = b; st.enemies.push(b);
     root.querySelector('.ar-bossbar').hidden = false;
     banner('THE DREAD WYRM', 2.4, 'boss');
+    sfx('roar');
     hud();
   }
 
@@ -500,12 +504,13 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     if (!hitHead && !hitChest) return false;
     const at = hitHead ? head : chest;
     const sx = (Math.max(at.l, x0) + Math.min(at.r, x1)) / 2, sy = Math.max(at.t, yTop) + 6;
-    if (b.state !== 'grounded') { spark(sx, sy); popText('CLANG', sx, sy - 8); return true; }   // armoured while airborne
+    if (b.state !== 'grounded') { spark(sx, sy); popText('CLANG', sx, sy - 8); sfx('clang'); return true; }   // armoured while airborne
     const dmg = hitHead ? 2 : 1;
     b.hp = Math.max(0, b.hp - dmg); b.flash = 0.12;
+    sfx('hit'); sfx(b.hp > 0 ? 'wyrmHurt' : 'wyrmDie');
     spark(sx, sy);
     addScore(50 * dmg, sx, sy - 6);
-    if (b.hp <= 0) { b.state = 'dying'; b.t = 0; st.enemies.forEach((o) => { if (o !== b && o.state !== 'dying') { o.state = 'dying'; o.t = 0; } }); }
+    if (b.hp <= 0) { hideTarget(); b.state = 'dying'; b.t = 0; st.enemies.forEach((o) => { if (o !== b && o.state !== 'dying') { o.state = 'dying'; o.t = 0; } }); }
     hud();
     return true;
   }
@@ -516,9 +521,25 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     b.t = 0; b.fired = 0;
     if (a === 'rain') b.state = 'rain';
     else if (a === 'sweep') { b.state = 'sweepDown'; b.fromY = b.y; }
-    else if (a === 'summon') b.state = 'roar';
-    else { b.state = 'divePrep'; b.fromY = b.y; }
+    else if (a === 'summon') { b.state = 'roar'; sfx('roar'); }
+    else {                                                  // the dive: it picks its landing spot now and marks it
+      b.state = 'divePrep'; b.fromY = b.y;
+      b.tx = Math.max(60, Math.min(300, st.k.x));
+      showTarget(b.tx);
+    }
   }
+
+  // a glowing mark on the ground where the wyrm will land: get clear of it during the wind-up
+  function showTarget(x) {
+    hideTarget();
+    const el = document.createElement('div');
+    el.className = 'ar-target';
+    el.style.left = (x - 34) * S + 'px'; el.style.top = (FLOOR - 6) * S + 'px';
+    el.style.width = 68 * S + 'px'; el.style.height = 12 * S + 'px';
+    layer.appendChild(el);
+    st.targetEl = el;
+  }
+  function hideTarget() { if (st.targetEl) { st.targetEl.remove(); st.targetEl = null; } }
 
   function updateBoss(b, dt) {
     const k = st.k, T = WYRM.tune[b.phase];
@@ -534,6 +555,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     if (want > b.phase && b.state !== 'grounded') {
       b.phase = want; b.step = 0; b.state = 'roar'; b.t = 0;
       banner(want === 2 ? 'THE WYRM GROWS FURIOUS' : 'THE WYRM IS ENRAGED', 2, 'boss');
+      sfx('roar');
       st.shake = 0.5;
     }
     const face = () => { b.dir = k.x >= b.x ? 1 : -1; };
@@ -580,16 +602,17 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
       }
       case 'divePrep':                                       // climb and flare: the telegraph
         b.y = b.fromY + (24 - b.fromY) * Math.min(1, b.t / 0.4); face();
-        b.tx = k.x;                                          // locks on at the last moment
-        if (b.t > T.tele) { b.state = 'dive'; b.t = 0; b.sx = b.x; b.sy = b.y; b.tx = Math.max(60, Math.min(300, k.x)); }
+        b.x += (b.tx - b.x) * Math.min(1, dt * 9);          // glide over the mark, so the dive drops straight down onto it
+        if (b.t > T.tele) { b.state = 'dive'; b.t = 0; b.sx = b.x; b.sy = b.y; sfx('dive'); }   // aims at the marked spot
         break;
       case 'dive': {
-        const p = Math.min(1, b.t / 0.32);
+        const p = Math.min(1, b.t / 0.4);
         b.x = b.sx + (b.tx - b.sx) * p; b.y = b.sy + ((FLOOR - WYRM.groundOffset) - b.sy) * p * p;
         const body = box(b, WYRM.body);
         if (overlap(body, k.x - 7, k.x + 7, FLOOR - k.jy - 34, FLOOR - k.jy)) hurtKnight(b.x);
         if (p >= 1) {
           b.state = 'grounded'; b.t = 0; st.shake = 0.35;
+          sfx('slam'); hideTarget();
           if (Math.abs(k.x - b.x) < 30 && k.jy < 16) hurtKnight(b.x);       // the slam itself
           if (b.phase >= 2) { groundFlame(b.x - 30, -150); groundFlame(b.x + 30, 150); }   // shockwaves
         }
@@ -622,6 +645,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     el.style.width = 14 * S + 'px'; el.style.height = 14 * S + 'px';
     layer.appendChild(el);
     st.shots.push({ el, x, y: FLOOR - 7, vx, vy: 0, t: 0, ground: true });
+    sfx('flame');
   }
 
   function victory() {
@@ -642,6 +666,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     el.style.width = 14 * S + 'px'; el.style.height = 14 * S + 'px';
     layer.appendChild(el);
     st.shots.push({ el, x, y, vx, vy, t: 0 });
+    sfx('fireball');
   }
 
   function updateShots(dt) {
@@ -746,6 +771,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     if (!st || !['ready', 'play'].includes(st.phase)) return;
     if (st.k.slash >= 0) return;
     st.k.slash = 0; st.k.slashHit = false;
+    sfx('slash');
   }
   function confirm() {
     if (!st) return;

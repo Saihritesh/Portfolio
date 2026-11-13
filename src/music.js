@@ -396,6 +396,79 @@ export function createMusic() {
     if (!timer) timer = setInterval(tick, 25);
   }
 
+  /* ---------------- sound effects: one-shots on their own bus (not affected by music fades) ---------------- */
+  let fx = null; const lastFx = {};
+  function fxBus() {
+    if (fx) return fx;
+    // a firm limiter: several hits, roars and fireballs at once shouldn't distort
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 12; comp.knee.value = 6; comp.attack.value = 0.002; comp.release.value = 0.15;
+    fx = ctx.createGain(); fx.gain.value = 0.5;
+    const verb = ctx.createConvolver(), wetG = ctx.createGain(); wetG.gain.value = 0.18;
+    const ir = ctx.createBuffer(2, ctx.sampleRate * 1.2, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length) ** 3; }
+    verb.buffer = ir;
+    fx.connect(comp); fx.connect(verb).connect(wetG).connect(comp);
+    comp.connect(ctx.destination);
+    return fx;
+  }
+  const nz = (t, dur, type, f0, f1, q, peak, out) => {             // a filtered noise burst with a sweeping filter
+    const n = ctx.createBufferSource(), flt = ctx.createBiquadFilter(), g = ctx.createGain();
+    n.buffer = noise; flt.type = type; flt.Q.value = q;
+    flt.frequency.setValueAtTime(f0, t); flt.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    env(g, t, Math.min(0.02, dur * 0.2), peak, dur);
+    n.connect(flt).connect(g).connect(out); n.start(t); n.stop(t + dur + 0.05);
+  };
+  const tone = (t, dur, type, f0, f1, peak, out, a = 0.004) => {    // a pitched blip with a pitch slide
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    env(g, t, a, peak, dur);
+    o.connect(g).connect(out); o.start(t); o.stop(t + dur + 0.05);
+  };
+  // a beast's roar: detuned low saws, growling tremolo, a sweeping filter and breath noise
+  const roar = (t, dur, f0, f1, peak, out) => {
+    const g = ctx.createGain(), lp = ctx.createBiquadFilter(), trem = ctx.createOscillator(), tg = ctx.createGain();
+    lp.type = 'lowpass'; lp.frequency.setValueAtTime(500, t); lp.frequency.exponentialRampToValueAtTime(1600, t + dur * 0.3); lp.frequency.exponentialRampToValueAtTime(350, t + dur);
+    trem.frequency.value = 26; tg.gain.value = peak * 0.45; trem.connect(tg).connect(g.gain);   // growl scales with the roar
+    for (const [mul, det] of [[1, -12], [1, 12], [1.5, 0], [0.5, 0]]) {
+      const o = ctx.createOscillator(); o.type = 'sawtooth'; o.detune.value = det;
+      o.frequency.setValueAtTime(f0 * mul, t); o.frequency.exponentialRampToValueAtTime(f1 * mul, t + dur);
+      o.connect(lp); o.start(t); o.stop(t + dur + 0.1);
+    }
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + 0.18);
+    g.gain.setValueAtTime(peak, t + dur * 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    trem.start(t); trem.stop(t + dur + 0.1);
+    lp.connect(g).connect(out);
+    nz(t, dur * 0.9, 'lowpass', 900, 250, 0.7, peak * 0.5, out);
+  };
+  const FX = {
+    slash: (t, o) => { nz(t, 0.17, 'bandpass', 3800, 700, 1.1, 4.0, o); nz(t, 0.09, 'highpass', 6000, 3000, 0.7, 0.6, o); },
+    hit: (t, o) => { tone(t, 0.13, 'sine', 170, 55, 0.9, o); nz(t, 0.09, 'lowpass', 2200, 500, 0.8, 0.6, o); },
+    hitDragon: (t, o) => { tone(t, 0.11, 'sine', 210, 70, 0.7, o); nz(t, 0.08, 'lowpass', 2600, 700, 0.8, 0.5, o); tone(t + 0.02, 0.14, 'sawtooth', 1100, 520, 0.12, o); },
+    ogreDie: (t, o) => { tone(t, 0.42, 'sawtooth', 150, 60, 0.28, o, 0.03); tone(t, 0.42, 'square', 75, 40, 0.18, o, 0.03); tone(t + 0.3, 0.3, 'sine', 120, 40, 0.8, o); nz(t + 0.3, 0.25, 'lowpass', 900, 150, 0.7, 0.4, o); },
+    dragonDie: (t, o) => { tone(t, 0.45, 'sawtooth', 1500, 380, 0.4, o, 0.01); tone(t, 0.45, 'square', 1510, 390, 0.2, o, 0.01); nz(t + 0.05, 0.4, 'bandpass', 1800, 400, 1.2, 0.9, o); },
+    clang: (t, o) => {
+      for (const [r, lvl, d] of [[1, 0.35, 0.7], [2.76, 0.22, 0.5], [5.4, 0.14, 0.35], [8.93, 0.08, 0.25]]) tone(t, d, 'sine', 640 * r, 640 * r * 0.995, lvl, o, 0.002);
+      nz(t, 0.04, 'highpass', 5000, 3000, 0.7, 0.4, o);
+    },
+    fireball: (t, o) => { nz(t, 0.34, 'lowpass', 300, 2600, 0.9, 0.8, o); nz(t + 0.04, 0.25, 'bandpass', 1400, 600, 1.5, 0.4, o); tone(t, 0.3, 'sine', 90, 50, 0.4, o, 0.03); },
+    flame: (t, o) => { nz(t, 0.55, 'bandpass', 500, 1400, 0.8, 2.0, o); nz(t, 0.5, 'lowpass', 300, 120, 0.7, 1.4, o); },
+    sizzle: (t, o) => { nz(t, 0.22, 'highpass', 2500, 6000, 0.8, 0.35, o); tone(t, 0.08, 'triangle', 1200, 900, 0.1, o); },
+    hurt: (t, o) => { nz(t, 0.16, 'lowpass', 1600, 300, 0.8, 0.7, o); tone(t, 0.16, 'square', 240, 110, 0.18, o); tone(t, 0.18, 'sine', 120, 50, 0.8, o); },
+    roar: (t, o) => roar(t, 1.7, 95, 62, 0.22, o),
+    wyrmHurt: (t, o) => { roar(t, 0.55, 140, 95, 0.26, o); tone(t, 0.15, 'sine', 140, 50, 0.5, o); },
+    dive: (t, o) => { nz(t, 0.34, 'bandpass', 350, 2200, 1.0, 3.2, o); },
+    slam: (t, o) => { tone(t, 0.75, 'sine', 95, 26, 1.0, o); nz(t, 0.9, 'lowpass', 600, 60, 0.7, 0.8, o); nz(t, 0.12, 'highpass', 2000, 800, 0.7, 0.3, o); },
+    wyrmDie: (t, o) => { roar(t, 2.4, 120, 38, 0.24, o); tone(t + 2.1, 1.0, 'sine', 80, 22, 0.8, o); nz(t + 2.1, 1.1, 'lowpass', 500, 50, 0.7, 0.6, o); },
+  };
+  function sfx(name) {
+    init();
+    if (ctx.state === 'suspended') ctx.resume();
+    const t = ctx.currentTime;
+    if (lastFx[name] && t - lastFx[name] < 0.07) return;               // a burst of the same sound plays once
+    lastFx[name] = t;
+    if (FX[name]) FX[name](t + 0.005, fxBus());
+  }
+
   // pause/resume the whole engine (e.g. when the tab is hidden)
   function suspend() { if (ctx && ctx.state === 'running') ctx.suspend(); }
   function resume() { if (ctx && ctx.state === 'suspended' && timer) ctx.resume(); }
@@ -411,5 +484,5 @@ export function createMusic() {
 
   function setVolume(v) { volume = v; if (ctx && timer) master.gain.setTargetAtTime(v, ctx.currentTime, 0.1); }
 
-  return { play, stop, setVolume, suspend, resume, get playing() { return !!timer; }, get track() { return current; } };
+  return { play, stop, setVolume, suspend, resume, sfx, get playing() { return !!timer; }, get track() { return current; } };
 }

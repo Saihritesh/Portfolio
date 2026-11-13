@@ -351,3 +351,11 @@ textarea.field { padding-top: 6px; resize: vertical; }
 .music-toggle.off { background: #3A4A75; color: #D9D2C3; box-shadow: inset -3px -3px 0 #1D254A, inset 3px 3px 0 #52608E, 0 0 0 3px #04060F; }
 .music-toggle:focus-visible { outline: 3px solid #FFE7A0; outline-offset: 3px; }
 @media (max-width: 700px) { .music-toggle { top: 10px; bottom: auto; right: 10px; font-size: 8px; padding: 8px 9px; } }
+
+/* the wyrm's dive target: a bright, pulsing ember ring on the ground */
+.ar-target { position: absolute; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255,226,140,.95) 0%, rgba(255,140,60,.85) 30%, rgba(220,50,30,.7) 55%, rgba(220,40,30,0) 72%);
+  box-shadow: 0 0 0 4px rgba(255,90,40,.9), 0 0 36px 10px rgba(255,90,40,.7);
+  animation: target-pulse .18s steps(2) infinite alternate; }
+@keyframes target-pulse { from { opacity: .6; transform: scaleX(.92); } to { opacity: 1; transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .ar-target { animation: none; } }
