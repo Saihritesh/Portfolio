@@ -353,9 +353,20 @@ textarea.field { padding-top: 6px; resize: vertical; }
 @media (max-width: 700px) { .music-toggle { top: 10px; bottom: auto; right: 10px; font-size: 8px; padding: 8px 9px; } }
 
 /* the wyrm's dive target: a bright, pulsing ember ring on the ground */
-.ar-target { position: absolute; pointer-events: none; border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(255,226,140,.95) 0%, rgba(255,140,60,.85) 30%, rgba(220,50,30,.7) 55%, rgba(220,40,30,0) 72%);
-  box-shadow: 0 0 0 4px rgba(255,90,40,.9), 0 0 36px 10px rgba(255,90,40,.7);
+.ar-target { position: absolute; pointer-events: none; 
+  background: linear-gradient(to bottom, rgba(255,226,140,.9), rgba(255,140,60,.8) 45%, rgba(220,50,30,.75));
+  outline: 4px solid rgba(255,90,40,.95); box-shadow: 0 0 36px 10px rgba(255,90,40,.6);
   animation: target-pulse .18s steps(2) infinite alternate; }
 @keyframes target-pulse { from { opacity: .6; transform: scaleX(.92); } to { opacity: 1; transform: scaleX(1); } }
 @media (prefers-reduced-motion: reduce) { .ar-target { animation: none; } }
+
+/* title-screen quick links: resume, LinkedIn, GitHub */
+.intro-links { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.intro-ui .intro-links .btn { font-size: clamp(10px, 1vw, 13px); min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; text-decoration: none;
+  box-shadow: inset -4px -4px 0 #141B33, inset 4px 4px 0 #3E4C78; }
+.intro-links { margin-top: -6px; }
+.intro-ui .intro-links .btn { min-height: 38px; }
+/* documents shown at real screen resolution need real-size headings */
+.doc-modal .popup .tag { font-size: 12px; }
+.doc-modal .popup .ttl { font-size: 22px; }
+.doc-modal .popup .close { font-size: 12px; min-height: 40px; }

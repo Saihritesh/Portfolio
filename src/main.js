@@ -151,8 +151,13 @@ function buildIntro() {
       <div class="intro-shade"></div>
       <div class="intro-ui">
         ${titleBlock()}
-        <div class="tagline">Saihritesh of PES University: AI/ML engineer, sworn to ship what he builds.</div>
+        <div class="tagline">Saihritesh of PES University: an AI/ML engineer who turns ideas into working systems.</div>
         <button type="button" class="btn blink" id="start">&gt; PRESS START</button>
+        <nav class="intro-links" aria-label="Quick links">
+          <button type="button" class="btn btn-dark" id="intro-resume">RESUME</button>
+          <a class="btn btn-dark" href="${esc(CONTENT.person.links.linkedin)}" target="_blank" rel="noopener">LINKEDIN</a>
+          <a class="btn btn-dark" href="${esc(CONTENT.person.links.github)}" target="_blank" rel="noopener">GITHUB</a>
+        </nav>
       </div>
     </section>`);
   app.appendChild(el);
@@ -176,7 +181,30 @@ function buildIntro() {
   });
 
   el.querySelector('#start').addEventListener('click', () => enterCastle());
+  el.querySelector('#intro-resume').addEventListener('click', openIntroResume);
   return el;
+}
+
+// The resume straight from the title screen, in the same sharp document modal the Library uses.
+let introDoc = null;
+function openIntroResume() {
+  if (introDoc) return;
+  introDoc = h(`<div class="doc-modal">
+    <div class="frame popup wide" role="dialog" aria-modal="true" aria-labelledby="intro-doc-title">
+      <div class="head"><div><div class="tag">THE KNIGHT'S RECORD</div><div class="ttl" id="intro-doc-title">RESUME</div></div>
+        <button type="button" class="btn btn-dark close" aria-label="Close">CLOSE &#10005;</button></div>
+      <div class="resume-view"><span class="px resume-wait">UNROLLING THE SCROLL...</span></div>
+    </div></div>`);
+  introDoc.addEventListener('click', (e) => { if (e.target === introDoc) closeIntroResume(); });
+  introDoc.querySelector('.close').addEventListener('click', closeIntroResume);
+  document.body.appendChild(introDoc);
+  introDoc.querySelector('.close').focus({ preventScroll: true });
+  loadResume(introDoc.querySelector('.resume-view'));
+}
+function closeIntroResume() {
+  if (!introDoc) return;
+  introDoc.remove(); introDoc = null;
+  intro?.querySelector('#intro-resume')?.focus({ preventScroll: true });
 }
 
 let intro = null;
@@ -481,6 +509,8 @@ window.addEventListener('keydown', (e) => {
     toggleMusic(); return;
   }
   if (mode === 'intro') {
+    if (introDoc) { if (e.key === 'Escape') closeIntroResume(); return; }
+    if (document.activeElement?.closest?.('.intro-links')) return;   // Enter on a quick link uses the link, not the castle
     if (['Enter', ' ', 'ArrowDown', 'PageDown'].includes(e.key) && document.activeElement?.id !== 'start') { e.preventDefault(); enterCastle(); }
     return;
   }
@@ -793,6 +823,8 @@ function render() {
     src = (R ? SPRITES.slashR : SPRITES.slashL)[f];
   } else if (game.walking || ny > 0) {
     const f = ny > 0 ? 0 : Math.floor(game.t * WALK_FPS) % 4;   // walk frames carry their own bob
+    if (ny === 0 && f !== game.stepF && (f === 1 || f === 3)) playSfx('step');   // a footfall twice per stride
+    game.stepF = ny > 0 ? -1 : f;
     src = (R ? SPRITES.walkR : SPRITES.walkL)[f];
   } else {
     src = R ? SPRITES.idleR : SPRITES.idleL;

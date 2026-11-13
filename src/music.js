@@ -440,8 +440,23 @@ export function createMusic() {
     lp.connect(g).connect(out);
     nz(t, dur * 0.9, 'lowpass', 900, 250, 0.7, peak * 0.5, out);
   };
+  // a noise swoosh with a gentle fade-in (no hard click at the start)
+  const swoosh = (t, dur, type, f0, f1, q, peak, att, out) => {
+    const n = ctx.createBufferSource(), flt = ctx.createBiquadFilter(), g = ctx.createGain();
+    n.buffer = noise; flt.type = type; flt.Q.value = q;
+    flt.frequency.setValueAtTime(f0, t); flt.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + att); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    n.connect(flt).connect(g).connect(out); n.start(t); n.stop(t + dur + 0.05);
+  };
+  const jit = () => 0.9 + Math.random() * 0.2;                     // small pitch variation per swing
   const FX = {
-    slash: (t, o) => { nz(t, 0.17, 'bandpass', 3800, 700, 1.1, 4.0, o); nz(t, 0.09, 'highpass', 6000, 3000, 0.7, 0.6, o); },
+    slash: (t, o) => { const v = jit(); swoosh(t, 0.2, 'lowpass', 320 * v, 950 * v, 0.9, 0.9, 0.06, o); },   // a soft air whoosh, easy on the ears when spammed
+    step: (t, o) => {                                               // an armoured boot on stone: a soft thud plus a little chainmail jingle
+      const v = 0.9 + Math.random() * 0.2;
+      tone(t, 0.07, 'sine', 120 * v, 60, 0.32, o, 0.002);
+      nz(t, 0.05, 'lowpass', 1400 * v, 300, 0.8, 0.35, o);
+      nz(t + 0.01, 0.06, 'bandpass', 6500 * v, 5000, 4.0, 0.12, o);
+    },
     hit: (t, o) => { tone(t, 0.13, 'sine', 170, 55, 0.9, o); nz(t, 0.09, 'lowpass', 2200, 500, 0.8, 0.6, o); },
     hitDragon: (t, o) => { tone(t, 0.11, 'sine', 210, 70, 0.7, o); nz(t, 0.08, 'lowpass', 2600, 700, 0.8, 0.5, o); tone(t + 0.02, 0.14, 'sawtooth', 1100, 520, 0.12, o); },
     ogreDie: (t, o) => { tone(t, 0.42, 'sawtooth', 150, 60, 0.28, o, 0.03); tone(t, 0.42, 'square', 75, 40, 0.18, o, 0.03); tone(t + 0.3, 0.3, 'sine', 120, 40, 0.8, o); nz(t + 0.3, 0.25, 'lowpass', 900, 150, 0.7, 0.4, o); },

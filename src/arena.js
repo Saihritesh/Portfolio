@@ -595,7 +595,7 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
         while (b.fired < due) {
           b.fired += 1;
           const mx = b.x + b.dir * (WYRM.mouth.x - 8);
-          groundFlame(mx, b.dir * (125 + b.phase * 20));
+          groundFlame(mx, b.dir * (125 + b.phase * 20), b.y + WYRM.mouth.y);   // spat from the jaws, lands, then rolls
         }
         if (b.t > T.waves * 0.5 + 0.4) { b.state = 'rise'; b.t = 0; b.fromY = b.y; }
         break;
@@ -639,13 +639,16 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     }
   }
 
-  function groundFlame(x, vx) {
+  // a flame that rolls along the floor. Given a start height (y0) it is first spat from the jaws and
+  // drops to the ground before it starts rolling.
+  function groundFlame(x, vx, y0) {
     const el = document.createElement('img');
     el.className = 'pix ent fireball ground'; el.alt = '';
     el.style.width = 14 * S + 'px'; el.style.height = 14 * S + 'px';
     layer.appendChild(el);
-    st.shots.push({ el, x, y: FLOOR - 7, vx, vy: 0, t: 0, ground: true });
-    sfx('flame');
+    const falling = y0 !== undefined && y0 < FLOOR - 7;
+    st.shots.push({ el, x, y: falling ? y0 : FLOOR - 7, vx, vy: falling ? 30 : 0, t: 0, ground: true, falling });
+    sfx(falling ? 'fireball' : 'flame');
   }
 
   function victory() {
@@ -674,6 +677,13 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     for (const f of st.shots) {
       if (f.dead) continue;
       f.t += dt;
+      if (f.falling) {                                        // dropping from the jaws to the floor
+        f.vy += 420 * dt; f.x += f.vx * 0.35 * dt; f.y += f.vy * dt;
+        const ky0 = FLOOR - k.jy - 34, ky1 = FLOOR - k.jy;
+        if (Math.abs(f.x - k.x) < 8 && f.y > ky0 - 4 && f.y < ky1 + 2) { f.dead = true; spark(f.x, f.y); hurtKnight(f.x); }
+        else if (f.y >= FLOOR - 7) { f.y = FLOOR - 7; f.vy = 0; f.falling = false; spark(f.x, FLOOR - 4); sfx('flame'); }
+        continue;
+      }
       if (!f.ground) f.vy += 40 * dt;
       f.x += f.vx * dt; f.y += f.vy * dt;
       const ky0 = FLOOR - k.jy - 34, ky1 = FLOOR - k.jy;
@@ -713,7 +723,12 @@ export function createArena({ keys, S, FLOOR, SPRITES, HK, HK_CX, reduced, onExi
     const R = k.facing > 0;
     let src;
     if (k.slash >= 0) src = (R ? SPRITES.slashR : SPRITES.slashL)[k.slash < SLASH_T[0] ? 0 : k.slash < SLASH_T[1] ? 1 : 2];
-    else if (k.walking || k.jy > 0) src = (R ? SPRITES.walkR : SPRITES.walkL)[k.jy > 0 ? 0 : Math.floor(st.t * 8) % 4];
+    else if (k.walking || k.jy > 0) {
+      const f = k.jy > 0 ? 0 : Math.floor(st.t * 8) % 4;
+      if (k.jy === 0 && f !== st.stepF && (f === 1 || f === 3)) sfx('step');   // a footfall twice per stride
+      st.stepF = k.jy > 0 ? -1 : f;
+      src = (R ? SPRITES.walkR : SPRITES.walkL)[f];
+    }
     else src = R ? SPRITES.idleR : SPRITES.idleL;
     if (knightImg.dataset.src !== src) { knightImg.src = src; knightImg.dataset.src = src; }
     const ax = (R ? HK_CX : HK - 1 - HK_CX) + 0.5;
